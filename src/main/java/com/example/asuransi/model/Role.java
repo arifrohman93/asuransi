@@ -1,24 +1,31 @@
+import jakarta.persistence.*;
+import lombok.*;
+
 @Entity
 @Table(name = "m_role")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
     @Id
+    @Column(name = "role_name", nullable = false)
     private String roleName;
 
-    private String keterangan;
+    @Column(name = "keterangan", nullable = false)
+    private String description;
 
-    public String getRoleName() {
-        return roleName;
-    }
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
+    @Column(name = "created_by")
+    private String createdBy;
 
-    public String getKeterangan() {
-        return keterangan;
-    }
+    @Column(name = "created_date", updatable = false)
+    private java.time.LocalDateTime createdDate;
 
-    public void setKeterangan(String keterangan) {
-        this.keterangan = keterangan;
-    }
+    @Column(name = "modified_by")
+    private String modifiedBy;
+
+    @Column(name = "modified_date")
+    private java.time.LocalDateTime modifiedDate;
 }

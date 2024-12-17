@@ -1,7 +1,10 @@
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -9,14 +12,13 @@ public class AuthController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(), loginRequest.getPassword()
-                )
-        );
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-        String token = jwtTokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new AuthResponse(token));
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String token = jwtTokenProvider.generateToken(userDetails);
+
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 }

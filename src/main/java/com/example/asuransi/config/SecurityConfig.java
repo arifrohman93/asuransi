@@ -2,6 +2,11 @@
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -10,6 +15,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/users/**").hasRole("ADMIN")
+                .antMatchers("/api/transaksi/**").hasRole("MARKETING")
                 .antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -1,55 +1,57 @@
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Set;
+import java.util.UUID;
+
 @Entity
 @Table(name = "m_user")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
+    @Column(name = "id_user")
     private UUID idUser;
 
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
+
+    @Column(name = "password", nullable = false)
     private String password;
-    private String fullname;
+
+    @Column(name = "fullname", nullable = false)
+    private String fullName;
+
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "is_active")
-    private boolean isActive;
+    @Column(name = "account_expired", nullable = false)
+    private boolean accountExpired = false;
 
-    public String getUsername() {
-        return username;
-    }
+    @Column(name = "account_locked", nullable = false)
+    private boolean accountLocked = false;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    @Column(name = "credential_is_expired", nullable = false)
+    private boolean credentialExpired = false;
 
-    public String getPassword() {
-        return password;
-    }
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<UserRole> roles;
 
-    public String getFullname() {
-        return fullname;
-    }
+    // Audit fields
+    @Column(name = "created_by")
+    private String createdBy;
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
+    @Column(name = "created_date", updatable = false)
+    private java.time.LocalDateTime createdDate;
 
-    public String getEmail() {
-        return email;
-    }
+    @Column(name = "modified_by")
+    private String modifiedBy;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
+    @Column(name = "modified_date")
+    private java.time.LocalDateTime modifiedDate;
 }
